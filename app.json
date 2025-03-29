@@ -1,7 +1,7 @@
 {
     "expo": {
-        "name": "check-in-helper",
-        "slug": "check-in-helper",
+        "name": "CheckInSync",
+        "slug": "checkinsync",
         "version": "1.0.0",
         "orientation": "portrait",
         "icon": "./assets/images/icon.png",
