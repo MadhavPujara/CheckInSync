@@ -23,3 +23,11 @@ beforeEach(() => {
     setItemAsync.mockClear();
     deleteItemAsync.mockClear();
 });
+
+const mockSecureStore = {
+    setItemAsync: jest.fn(),
+    getItemAsync: jest.fn(),
+    deleteItemAsync: jest.fn(),
+};
+
+export default mockSecureStore;

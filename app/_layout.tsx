@@ -1,71 +1,44 @@
 import { Stack } from "expo-router";
-import { useEffect } from "react";
-import { useColorScheme } from "react-native";
+import { useEffect, useCallback } from "react";
 import { PaperProvider, IconButton } from "react-native-paper";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { lightTheme, darkTheme } from "@/theme/index";
-import * as SecureStore from "expo-secure-store";
-import { useState } from "react";
+import { ThemeProvider, useThemeContext } from "@/theme/ThemeContext";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+// Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
-const THEME_PREFERENCE_KEY = "theme_preference";
-
-export default function RootLayout() {
-    const systemColorScheme = useColorScheme();
-    const [userTheme, setUserTheme] = useState<"light" | "dark" | "system">(
-        "system"
-    );
+function AppNavigator() {
+    const { effectiveTheme, themePreference, setThemePreference } =
+        useThemeContext();
     const [loaded] = useFonts({
         SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     });
 
-    useEffect(() => {
+    // When both the theme is loaded and fonts are loaded, hide the splash screen
+    const onLayoutRootView = useCallback(async () => {
         if (loaded) {
-            SplashScreen.hideAsync();
+            await SplashScreen.hideAsync();
         }
     }, [loaded]);
 
+    // Hide the splash screen after resources are loaded and theme is determined
     useEffect(() => {
-        loadThemePreference();
-    }, []);
-
-    const loadThemePreference = async () => {
-        try {
-            const savedTheme = await SecureStore.getItemAsync(
-                THEME_PREFERENCE_KEY
-            );
-            if (savedTheme) {
-                setUserTheme(savedTheme as "light" | "dark" | "system");
-            }
-        } catch (error) {
-            console.error("Failed to load theme preference:", error);
+        if (loaded) {
+            onLayoutRootView();
         }
-    };
+    }, [loaded, onLayoutRootView]);
 
-    const saveThemePreference = async (theme: "light" | "dark" | "system") => {
-        try {
-            await SecureStore.setItemAsync(THEME_PREFERENCE_KEY, theme);
-            setUserTheme(theme);
-        } catch (error) {
-            console.error("Failed to save theme preference:", error);
-        }
-    };
-
-    const toggleTheme = () => {
+    const toggleTheme = async () => {
         const newTheme =
-            userTheme === "system"
+            themePreference === "system"
                 ? "light"
-                : userTheme === "light"
+                : themePreference === "light"
                 ? "dark"
                 : "system";
-        saveThemePreference(newTheme);
+        await setThemePreference(newTheme);
     };
-
-    const effectiveTheme =
-        userTheme === "system" ? systemColorScheme : userTheme;
 
     if (!loaded) {
         return null;
@@ -85,13 +58,41 @@ export default function RootLayout() {
                                     : "weather-sunny"
                             }
                             onPress={toggleTheme}
+                            size={24}
+                            iconColor={
+                                effectiveTheme === "dark"
+                                    ? "#FFFFFF"
+                                    : "#000000"
+                            }
                         />
                     ),
                 }}
             >
-                <Stack.Screen name="index" />
-                <Stack.Screen name="(auth)/setup" />
+                <Stack.Screen
+                    name="index"
+                    options={
+                        {
+                            // Hide the header completely on the index screen if desired
+                            // headerShown: false,
+                        }
+                    }
+                />
+                <Stack.Screen
+                    name="(auth)/setup"
+                    options={{
+                        // You can customize headers for specific screens
+                        title: "Setup",
+                    }}
+                />
             </Stack>
         </PaperProvider>
+    );
+}
+
+export default function RootLayout() {
+    return (
+        <ThemeProvider>
+            <AppNavigator />
+        </ThemeProvider>
     );
 }

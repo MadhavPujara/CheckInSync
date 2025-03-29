@@ -29,20 +29,26 @@ export default abstract class BaseAPIService {
         this.api.interceptors.response.use(
             (response) => response,
             async (error: AxiosError<APIResponse>) => {
-                if (!error.config) throw this.handleError(error);
+                const config = error.config as AxiosRequestConfig & {
+                    __retryCount?: number;
+                };
 
-                const retryCount = (error.config as any).__retryCount || 0;
-                if (retryCount >= this.maxRetries) {
-                    throw this.handleError(error);
+                if (!config) {
+                    return Promise.reject(this.handleError(error));
                 }
 
-                if (this.shouldRetry(error)) {
-                    (error.config as any).__retryCount = retryCount + 1;
-                    await this.delay(this.retryDelay * (retryCount + 1));
-                    return this.api(error.config);
+                config.__retryCount = (config.__retryCount || 0) + 1;
+
+                // Check if we should retry and haven't exceeded max retries
+                if (
+                    this.shouldRetry(error) &&
+                    config.__retryCount <= this.maxRetries
+                ) {
+                    await this.delay(this.retryDelay * config.__retryCount);
+                    return this.api.request(config);
                 }
 
-                throw this.handleError(error);
+                return Promise.reject(this.handleError(error));
             }
         );
     }
@@ -50,11 +56,13 @@ export default abstract class BaseAPIService {
     private shouldRetry(error: unknown): boolean {
         if (!error || typeof error !== "object") return false;
         const axiosError = error as AxiosError<APIResponse>;
+
         if (!axiosError.isAxiosError) return false;
+        if (!axiosError.response) return true;
+
         return (
-            !axiosError.response || // Network errors
-            axiosError.response.status === 429 || // Rate limiting
-            axiosError.response.status >= 500 // Server errors
+            axiosError.response.status >= 500 ||
+            axiosError.response.status === 429
         );
     }
 
@@ -67,13 +75,11 @@ export default abstract class BaseAPIService {
             return new Errors.NetworkError();
         }
 
-        if (!("response" in error)) {
-            return new Errors.NetworkError();
-        }
-
         const axiosError = error as AxiosError<APIResponse>;
+
         if (!axiosError.response) {
-            return new Errors.NetworkError();
+            const error = new Errors.NetworkError();
+            return error;
         }
 
         const { status, data } = axiosError.response;
@@ -83,6 +89,13 @@ export default abstract class BaseAPIService {
                 return new Errors.AuthenticationError();
             case 429:
                 return new Errors.RateLimitError();
+            case 400:
+            case 404:
+                return new Errors.APIError(
+                    data?.message || "Client error",
+                    status,
+                    data
+                );
             default:
                 return new Errors.APIError(
                     data?.message || "An unexpected error occurred",
@@ -96,11 +109,7 @@ export default abstract class BaseAPIService {
         config: AxiosRequestConfig
     ): Promise<AxiosResponse<T>> {
         try {
-            const response = await this.api.request<T>(config);
-            if (!response) {
-                throw new Errors.NetworkError();
-            }
-            return response;
+            return await this.api.request<T>(config);
         } catch (error) {
             throw this.handleError(error);
         }

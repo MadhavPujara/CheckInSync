@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Portal, Modal, List } from "react-native-paper";
+import { Portal, Modal, List, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
 import CheckInButton from "@/components/ui/CheckInButton";
 import SettingsScreen from "@/components/screens/SettingsScreen";
@@ -9,6 +9,7 @@ import settingsStorage from "@/services/storage/settingsStorage";
 
 export default function App() {
     const router = useRouter();
+    const theme = useTheme();
     const [isSetupComplete, setIsSetupComplete] = useState<boolean | null>(
         null
     );
@@ -32,7 +33,12 @@ export default function App() {
     }
 
     return (
-        <View style={styles.container}>
+        <View
+            style={[
+                styles.container,
+                { backgroundColor: theme.colors.background },
+            ]}
+        >
             <Header onMenuPress={() => setIsMenuOpen(true)} />
 
             <View style={styles.content}>
@@ -43,7 +49,10 @@ export default function App() {
                 <Modal
                     visible={showSettings}
                     onDismiss={() => setShowSettings(false)}
-                    contentContainerStyle={styles.modalContent}
+                    contentContainerStyle={[
+                        styles.modalContent,
+                        { backgroundColor: theme.colors.background },
+                    ]}
                 >
                     <SettingsScreen />
                 </Modal>
@@ -53,11 +62,21 @@ export default function App() {
                 <Modal
                     visible={isMenuOpen}
                     onDismiss={() => setIsMenuOpen(false)}
-                    contentContainerStyle={styles.menuContent}
+                    contentContainerStyle={[
+                        styles.menuContent,
+                        { backgroundColor: theme.colors.surface },
+                    ]}
                 >
                     <List.Item
                         title="Settings"
-                        left={(props) => <List.Icon {...props} icon="cog" />}
+                        titleStyle={{ color: theme.colors.onSurface }}
+                        left={(props) => (
+                            <List.Icon
+                                {...props}
+                                icon="cog"
+                                color={theme.colors.onSurface}
+                            />
+                        )}
                         onPress={() => {
                             setIsMenuOpen(false);
                             setShowSettings(true);
@@ -72,19 +91,16 @@ export default function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
     },
     content: {
         flex: 1,
     },
     menuContent: {
-        backgroundColor: "#fff",
         padding: 0,
         margin: 16,
         borderRadius: 8,
     },
     modalContent: {
-        backgroundColor: "#fff",
         flex: 1,
         margin: 0,
     },

@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import { Card, TextInput, Button, Text } from "react-native-paper";
+import {
+    Card,
+    TextInput,
+    Button,
+    Text,
+    useTheme,
+    Switch,
+    SegmentedButtons,
+} from "react-native-paper";
 import settingsStorage, {
     ZohoKeys,
     BasecampKeys,
 } from "../../../src/services/storage/settingsStorage";
+import { useThemeContext } from "@/theme/ThemeContext";
 
 export default function SettingsScreen() {
+    const theme = useTheme();
+    const { themePreference, setThemePreference } = useThemeContext();
+
     const [zohoKeys, setZohoKeys] = useState<ZohoKeys>({
         clientId: "",
         clientSecret: "",
@@ -28,6 +40,7 @@ export default function SettingsScreen() {
     const loadSettings = async () => {
         const savedZohoKeys = await settingsStorage.getZohoKeys();
         const savedBasecampKeys = await settingsStorage.getBasecampKeys();
+
         if (savedZohoKeys) setZohoKeys(savedZohoKeys);
         if (savedBasecampKeys) setBasecampKeys(savedBasecampKeys);
     };
@@ -56,13 +69,71 @@ export default function SettingsScreen() {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <Text variant="headlineMedium" style={styles.title}>
+        <ScrollView
+            style={[
+                styles.container,
+                { backgroundColor: theme.colors.background },
+            ]}
+        >
+            <Text
+                variant="headlineMedium"
+                style={[styles.title, { color: theme.colors.onBackground }]}
+            >
                 Settings
             </Text>
 
-            <Card style={styles.card}>
-                <Card.Title title="Zoho People API Keys" />
+            <Card
+                style={[styles.card, { backgroundColor: theme.colors.surface }]}
+            >
+                <Card.Title
+                    title="Appearance"
+                    titleStyle={{ color: theme.colors.onSurface }}
+                />
+                <Card.Content>
+                    <Text
+                        style={{
+                            marginBottom: 12,
+                            color: theme.colors.onSurface,
+                        }}
+                    >
+                        Theme
+                    </Text>
+                    <SegmentedButtons
+                        value={themePreference}
+                        onValueChange={(value) =>
+                            setThemePreference(
+                                value as "light" | "dark" | "system"
+                            )
+                        }
+                        buttons={[
+                            {
+                                value: "light",
+                                label: "Light",
+                                icon: "white-balance-sunny",
+                            },
+                            {
+                                value: "dark",
+                                label: "Dark",
+                                icon: "weather-night",
+                            },
+                            {
+                                value: "system",
+                                label: "Auto",
+                                icon: "theme-light-dark",
+                            },
+                        ]}
+                        style={{ marginBottom: 16 }}
+                    />
+                </Card.Content>
+            </Card>
+
+            <Card
+                style={[styles.card, { backgroundColor: theme.colors.surface }]}
+            >
+                <Card.Title
+                    title="Zoho People API Keys"
+                    titleStyle={{ color: theme.colors.onSurface }}
+                />
                 <Card.Content>
                     <TextInput
                         mode="outlined"
@@ -73,6 +144,9 @@ export default function SettingsScreen() {
                         }
                         autoCapitalize="none"
                         style={styles.input}
+                        textColor={theme.colors.onBackground}
+                        outlineColor={theme.colors.outline}
+                        activeOutlineColor={theme.colors.primary}
                     />
                     <TextInput
                         mode="outlined"
@@ -83,6 +157,9 @@ export default function SettingsScreen() {
                         }
                         autoCapitalize="none"
                         style={styles.input}
+                        textColor={theme.colors.onBackground}
+                        outlineColor={theme.colors.outline}
+                        activeOutlineColor={theme.colors.primary}
                     />
                     <TextInput
                         mode="outlined"
@@ -93,12 +170,20 @@ export default function SettingsScreen() {
                         }
                         autoCapitalize="none"
                         style={styles.input}
+                        textColor={theme.colors.onBackground}
+                        outlineColor={theme.colors.outline}
+                        activeOutlineColor={theme.colors.primary}
                     />
                 </Card.Content>
             </Card>
 
-            <Card style={styles.card}>
-                <Card.Title title="Basecamp API Keys" />
+            <Card
+                style={[styles.card, { backgroundColor: theme.colors.surface }]}
+            >
+                <Card.Title
+                    title="Basecamp API Keys"
+                    titleStyle={{ color: theme.colors.onSurface }}
+                />
                 <Card.Content>
                     <TextInput
                         mode="outlined"
@@ -112,6 +197,9 @@ export default function SettingsScreen() {
                         }
                         autoCapitalize="none"
                         style={styles.input}
+                        textColor={theme.colors.onBackground}
+                        outlineColor={theme.colors.outline}
+                        activeOutlineColor={theme.colors.primary}
                     />
                     <TextInput
                         mode="outlined"
@@ -125,6 +213,9 @@ export default function SettingsScreen() {
                         }
                         autoCapitalize="none"
                         style={styles.input}
+                        textColor={theme.colors.onBackground}
+                        outlineColor={theme.colors.outline}
+                        activeOutlineColor={theme.colors.primary}
                     />
                     <TextInput
                         mode="outlined"
@@ -138,6 +229,9 @@ export default function SettingsScreen() {
                         }
                         autoCapitalize="none"
                         style={styles.input}
+                        textColor={theme.colors.onBackground}
+                        outlineColor={theme.colors.outline}
+                        activeOutlineColor={theme.colors.primary}
                     />
                     <TextInput
                         mode="outlined"
@@ -151,6 +245,9 @@ export default function SettingsScreen() {
                         }
                         autoCapitalize="none"
                         style={styles.input}
+                        textColor={theme.colors.onBackground}
+                        outlineColor={theme.colors.outline}
+                        activeOutlineColor={theme.colors.primary}
                     />
                 </Card.Content>
             </Card>
@@ -170,7 +267,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
-        backgroundColor: "#fff",
     },
     title: {
         marginBottom: 24,

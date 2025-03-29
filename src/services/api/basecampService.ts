@@ -1,7 +1,7 @@
 import BaseAPIService from "@/services/api/baseService";
-import settingsStorage from "@/src/services/storage/settingsStorage";
-import { BasecampService } from "@/src/services/types/services";
+import settingsStorage from "@/services/storage/settingsStorage";
 import Errors from "@/services/api/errors";
+import { BasecampService } from "@/utils/types/services";
 
 const BASECAMP_API_BASE = "https://3.basecampapi.com";
 

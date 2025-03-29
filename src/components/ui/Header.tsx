@@ -13,7 +13,7 @@ export default function Header({ onMenuPress }: HeaderProps) {
                 icon="menu"
                 onPress={onMenuPress}
             />
-            <Appbar.Content title="Check-in Helper" />
+            <Appbar.Content testID="header-title" title="Check-in Helper" />
         </Appbar.Header>
     );
 }

@@ -28,7 +28,7 @@ export default function CheckInButton() {
             await zohoService.checkIn(locationString);
 
             // Send message to Basecamp
-            const message = `✅ Checked in at ${new Date().toLocaleTimeString()}`;
+            const message = `Good Morning`;
             await basecampService.checkIn(message);
 
             alert("Successfully checked in and notified team!");

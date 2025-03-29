@@ -1,6 +1,6 @@
 import BaseAPIService from "@/services/api/baseService";
-import settingsStorage from "@/src/services/storage/settingsStorage";
-import { ZohoService } from "@/src/services/types/services";
+import settingsStorage from "@/services/storage/settingsStorage";
+import { ZohoService } from "@/utils/types/services";
 import Errors from "@/services/api/errors";
 
 const ZOHO_API_BASE = "https://people.zoho.com/api/forms";

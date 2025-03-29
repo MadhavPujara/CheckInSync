@@ -137,6 +137,19 @@ export default function SetupScreen({ onSetupComplete }: SetupScreenProps) {
                             outlineColor={theme.colors.outline}
                             activeOutlineColor={theme.colors.primary}
                         />
+                        <TextInput
+                            mode="outlined"
+                            label="Access Token"
+                            value={zohoKeys.accessToken}
+                            onChangeText={(text) =>
+                                setZohoKeys({ ...zohoKeys, accessToken: text })
+                            }
+                            autoCapitalize="none"
+                            style={styles.input}
+                            textColor={theme.colors.onBackground}
+                            outlineColor={theme.colors.outline}
+                            activeOutlineColor={theme.colors.primary}
+                        />
                     </Card.Content>
                 </Card>
 
