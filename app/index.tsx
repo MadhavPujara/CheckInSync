@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Portal, Modal, List } from "react-native-paper";
 import { useRouter } from "expo-router";
-import CheckInButton from "./components/CheckInButton";
-import SettingsScreen from "./components/SettingsScreen";
-import Header from "./components/Header";
-import settingsStorage from "./services/settingsStorage";
+import CheckInButton from "@/components/ui/CheckInButton";
+import SettingsScreen from "@/components/screens/SettingsScreen";
+import Header from "@/components/ui/Header";
+import settingsStorage from "@/services/storage/settingsStorage";
 
 export default function App() {
     const router = useRouter();

@@ -1,50 +1,129 @@
-# Welcome to your Expo app 👋
+# Check-in Helper
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native mobile app that helps you check in to Zoho People and notify your team on Basecamp with a single tap.
 
-## Get started
+## Features
 
-1. Install dependencies
+- One-tap check-in to Zoho People with location
+- Automatic team notification in Basecamp Campfire
+- Material Design UI with dark mode support
+- Secure credential storage using expo-secure-store
+- Easy configuration through settings UI
+
+## Prerequisites
+
+- Node.js (v18 or newer recommended)
+- npm or yarn
+- Android Studio (for Android development)
+- Xcode (for iOS development, Mac only)
+- Expo CLI
+
+## Setup & Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone <your-repo-url>
+   cd check-in-helper
+   ```
+
+2. Install dependencies:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+3. Start the development server:
 
    ```bash
-    npx expo start
+   npm start
    ```
 
-In the output, you'll find options to open the app in a
+## Running on Android/iOS
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+1. Install Expo Go on your device or start an emulator
+2. Scan the QR code from the terminal after running `npm start`
+3. Or run directly on emulator/simulator:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+   ```bash
+   npm run android
+   # or
+   npm run ios
+   ```
 
-## Get a fresh project
+## Project Structure
 
-When you're ready, run:
-
-```bash
-npm run reset-project
+```text
+check-in-helper/
+├── app/                    # Main application code
+├── src/                    # Source code
+├── scripts/               # Build and utility scripts
+├── assets/                # Static assets
+├── docs/                  # Documentation
+├── jest.setup.js         # Test configuration
+├── tsconfig.json         # TypeScript configuration
+├── app.json              # Expo configuration
+└── package.json          # Project dependencies
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Configuration
 
-## Learn more
+On first launch, you'll need to configure:
 
-To learn more about developing your project with Expo, look at the following resources:
+### Zoho People API
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- Client ID
+- Client Secret
+- Refresh Token
 
-## Join the community
+### Basecamp API
 
-Join our community of developers creating universal apps.
+- Access Token
+- Account ID
+- Project ID
+- Campfire ID
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+These can be updated anytime through the Settings menu.
+
+## Development
+
+- Built with Expo SDK 52
+- Uses React Native Paper for Material Design components
+- Implements Expo Router for navigation
+- Uses expo-secure-store for secure credential storage
+- TypeScript support
+- Jest for testing
+
+## Key Dependencies
+
+- expo: ~52.0.41
+- react: 18.3.1
+- react-native: 0.76.7
+- react-native-paper: ^5.13.1
+- expo-router: ~4.0.19
+- expo-secure-store: ~14.0.1
+- expo-location: ^18.0.8
+- axios: ^1.8.4
+
+## Available Scripts
+
+- `npm start` - Start development server with tunneling
+- `npm run android` - Run on Android
+- `npm run ios` - Run on iOS
+- `npm run web` - Run on web
+- `npm test` - Run tests
+- `npm run lint` - Run linter
+- `npm run type-check` - Check TypeScript types
+- `npm run version:major/minor/patch` - Version bumping
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details

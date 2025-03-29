@@ -1,0 +1,17 @@
+# Expo App Rules
+
+## Storage
+- Use `expo-secure-store` for sensitive data storage
+- Do not use `AsyncStorage` or `react-native-encrypted-storage` for sensitive data
+- Test storage operations with proper mocks in `__tests__/__mocks__/expo-secure-store.ts`
+
+## Testing
+- Mock external dependencies in `__tests__/__mocks__/`
+- Clear mocks before each test
+- Use descriptive test names
+- Group related tests in describe blocks
+
+## Dependencies
+- Use `npx expo install` for Expo packages
+- Keep dependencies up to date with Expo SDK
+- Check compatibility with `expo doctor` 
