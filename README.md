@@ -127,3 +127,46 @@ These can be updated anytime through the Settings menu.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details
+
+## Git Hooks (Husky)
+
+Pre-commit hooks ensure code quality:
+
+- Type checking: `npm run type-check`
+- Tests: `npm run test`
+
+Commit messages are enforced using commitlint with conventional commits format:
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer]
+```
+
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `revert`
+
+## Versioning
+
+This project uses [standard-version](https://github.com/conventional-changelog/standard-version) for versioning.
+
+Available commands:
+
+```bash
+# Create first release
+npm run release:first
+
+# Bump version
+npm run release        # Automatic version bump based on commits
+npm run release:major  # 1.0.0 -> 2.0.0
+npm run release:minor  # 1.0.0 -> 1.1.0
+npm run release:patch  # 1.0.0 -> 1.0.1
+```
+
+Each release automatically:
+
+- Bumps version in package.json
+- Updates CHANGELOG.md
+- Creates git tag
+- Commits changes
