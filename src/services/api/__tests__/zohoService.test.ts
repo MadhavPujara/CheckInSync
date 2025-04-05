@@ -1,14 +1,7 @@
 import axios from "axios";
-// Remove MockAdapter import
-// import MockAdapter from "axios-mock-adapter";
 import ZohoServiceImpl from "@/services/api/zohoService";
 import settingsStorage from "@/services/storage/settingsStorage";
-import {
-    ValidationError,
-    APIError,
-    NetworkError,
-    AuthenticationError,
-} from "@/services/api/errors"; // Import specific errors
+import { ValidationError, APIError, NetworkError } from "@/services/api/errors"; // Import specific errors
 
 // Mock the entire axios module
 jest.mock("axios");

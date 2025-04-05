@@ -5,10 +5,6 @@ import Errors from "@/services/api/errors";
 
 const ZOHO_API_BASE = "https://people.zoho.com/api/forms";
 
-interface ZohoKeys {
-    accessToken: string;
-}
-
 interface CheckInResponse {
     success: boolean;
     message?: string;

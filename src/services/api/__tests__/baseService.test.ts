@@ -42,6 +42,7 @@ class TestAPIService extends BaseAPIService {
 
 describe("BaseAPIService", () => {
     let service: TestAPIService;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let errorInterceptor: any;
 
     beforeEach(() => {
@@ -224,16 +225,6 @@ describe("BaseAPIService", () => {
             // Create a custom error that's exactly null
             // This tests if (!error || typeof error !== "object")
             const nullError = null;
-
-            // Direct invocation via the error interceptor
-            const errorWithConfig = {
-                isAxiosError: true,
-                config: {
-                    url: "/test",
-                    __retryCount: 0,
-                },
-                response: undefined,
-            };
 
             // Mock to return our test value when handleError is called
             const originalHandleError = service["handleError"];

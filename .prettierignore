@@ -1,0 +1,21 @@
+# Build directories
+dist/
+build/
+web-build/
+coverage/
+.expo/
+
+# Node modules
+node_modules/
+
+# Package lock files
+package.json
+package-lock.json
+yarn.lock
+
+# Generated files
+*.generated.*
+.cursor/
+
+# Other
+.DS_Store

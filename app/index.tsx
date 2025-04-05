@@ -18,7 +18,7 @@ export default function App() {
 
     useEffect(() => {
         checkSetup();
-    }, []);
+    });
 
     const checkSetup = async () => {
         const setupComplete = await settingsStorage.isSetupComplete();

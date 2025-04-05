@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import {
     Card,
     TextInput,
     Button,
     Text,
     useTheme,
-    Switch,
     SegmentedButtons,
 } from "react-native-paper";
 import settingsStorage, {

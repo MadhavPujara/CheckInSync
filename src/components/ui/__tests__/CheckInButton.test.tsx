@@ -7,27 +7,20 @@ import {
 } from "@testing-library/react-native";
 import CheckInButton from "@/components/ui/CheckInButton";
 import * as Location from "expo-location";
-// Import the types if needed, but mock the central index file
-// import zohoService from "@/services/api/zohoService";
-// import basecampService from "@/services/api/basecampService";
+import { zohoService, basecampService } from "@/services/index";
 
 // Mock the central service index file
 jest.mock("@/services", () => ({
     zohoService: {
         checkIn: jest.fn(),
-        // Add other methods if CheckInButton uses them
     },
     basecampService: {
         checkIn: jest.fn(),
-        // Add other methods if CheckInButton uses them
     },
 }));
 
 // Mock expo-location
 jest.mock("expo-location");
-
-// Import the mocked services AFTER mocking the index
-import { zohoService, basecampService } from "@/services/index";
 
 describe("CheckInButton", () => {
     beforeEach(() => {
@@ -47,7 +40,7 @@ describe("CheckInButton", () => {
     });
 
     it("renders correctly", () => {
-        const { getByTestId, getByText } = rtlRender(<CheckInButton />);
+        const { getByTestId } = rtlRender(<CheckInButton />);
         expect(getByTestId("check-in-container")).toBeTruthy();
         expect(getByTestId("check-in-button")).toBeTruthy();
     });

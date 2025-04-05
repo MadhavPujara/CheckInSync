@@ -5,12 +5,6 @@ import { BasecampService } from "@/utils/types/services";
 
 const BASECAMP_API_BASE = "https://3.basecampapi.com";
 
-interface BasecampKeys {
-    accessToken: string;
-    accountId: string;
-    projectId: string;
-}
-
 interface MessageResponse {
     id: number;
     status: string;
@@ -62,7 +56,7 @@ class BasecampServiceImpl extends BaseAPIService implements BasecampService {
                 headers,
             });
             return true;
-        } catch (error) {
+        } catch (error: unknown) {
             return false;
         }
     }
