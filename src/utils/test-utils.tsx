@@ -1,14 +1,10 @@
 import React from "react";
 import { render } from "@testing-library/react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { PaperProvider, MD3LightTheme } from "react-native-paper";
 
+// Simple wrapper that just renders children directly
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
-    return (
-        <SafeAreaProvider>
-            <PaperProvider theme={MD3LightTheme}>{children}</PaperProvider>
-        </SafeAreaProvider>
-    );
+    return <PaperProvider theme={MD3LightTheme}>{children}</PaperProvider>;
 };
 
 const customRender = (ui: React.ReactElement, options = {}) =>

@@ -77,12 +77,14 @@ export default function SettingsScreen() {
         >
             <Text
                 variant="headlineMedium"
+                testID="settings-text"
                 style={[styles.title, { color: theme.colors.onBackground }]}
             >
                 Settings
             </Text>
 
             <Card
+                testID="appearance-card"
                 style={[styles.card, { backgroundColor: theme.colors.surface }]}
             >
                 <Card.Title
@@ -128,6 +130,7 @@ export default function SettingsScreen() {
             </Card>
 
             <Card
+                testID="zoho-people-api-keys-card"
                 style={[styles.card, { backgroundColor: theme.colors.surface }]}
             >
                 <Card.Title
@@ -147,6 +150,7 @@ export default function SettingsScreen() {
                         textColor={theme.colors.onBackground}
                         outlineColor={theme.colors.outline}
                         activeOutlineColor={theme.colors.primary}
+                        testID="zoho-client-id-input"
                     />
                     <TextInput
                         mode="outlined"
@@ -160,6 +164,7 @@ export default function SettingsScreen() {
                         textColor={theme.colors.onBackground}
                         outlineColor={theme.colors.outline}
                         activeOutlineColor={theme.colors.primary}
+                        testID="zoho-client-secret-input"
                     />
                     <TextInput
                         mode="outlined"
@@ -173,11 +178,13 @@ export default function SettingsScreen() {
                         textColor={theme.colors.onBackground}
                         outlineColor={theme.colors.outline}
                         activeOutlineColor={theme.colors.primary}
+                        testID="zoho-refresh-token-input"
                     />
                 </Card.Content>
             </Card>
 
             <Card
+                testID="basecamp-api-keys-card"
                 style={[styles.card, { backgroundColor: theme.colors.surface }]}
             >
                 <Card.Title
@@ -200,6 +207,7 @@ export default function SettingsScreen() {
                         textColor={theme.colors.onBackground}
                         outlineColor={theme.colors.outline}
                         activeOutlineColor={theme.colors.primary}
+                        testID="basecamp-access-token-input"
                     />
                     <TextInput
                         mode="outlined"
@@ -216,6 +224,7 @@ export default function SettingsScreen() {
                         textColor={theme.colors.onBackground}
                         outlineColor={theme.colors.outline}
                         activeOutlineColor={theme.colors.primary}
+                        testID="basecamp-account-id-input"
                     />
                     <TextInput
                         mode="outlined"
@@ -232,6 +241,7 @@ export default function SettingsScreen() {
                         textColor={theme.colors.onBackground}
                         outlineColor={theme.colors.outline}
                         activeOutlineColor={theme.colors.primary}
+                        testID="basecamp-project-id-input"
                     />
                     <TextInput
                         mode="outlined"
@@ -248,6 +258,7 @@ export default function SettingsScreen() {
                         textColor={theme.colors.onBackground}
                         outlineColor={theme.colors.outline}
                         activeOutlineColor={theme.colors.primary}
+                        testID="basecamp-campfire-id-input"
                     />
                 </Card.Content>
             </Card>
@@ -257,6 +268,7 @@ export default function SettingsScreen() {
                 onPress={handleSave}
                 disabled={!isValid()}
                 style={styles.button}
+                testID="save-button"
             >
                 Save Changes
             </Button>

@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ThemedView applies custom dark color correctly 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#00ff00",
+      },
+      undefined,
+    ]
+  }
+/>
+`;
+
+exports[`ThemedView applies custom light color correctly 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#ff0000",
+      },
+      undefined,
+    ]
+  }
+/>
+`;
+
+exports[`ThemedView applies custom styles correctly 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#f0f0f0",
+      },
+      {
+        "borderRadius": 5,
+        "margin": 10,
+        "padding": 20,
+      },
+    ]
+  }
+/>
+`;
+
+exports[`ThemedView combines background color with custom styles 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#ff5500",
+      },
+      {
+        "margin": 10,
+        "padding": 20,
+      },
+    ]
+  }
+/>
+`;
+
+exports[`ThemedView passes additional props correctly 1`] = `
+<View
+  accessibilityLabel="Test View"
+  style={
+    [
+      {
+        "backgroundColor": "#f0f0f0",
+      },
+      undefined,
+    ]
+  }
+  testID="test-view"
+/>
+`;
+
+exports[`ThemedView renders with default background color 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#f0f0f0",
+      },
+      undefined,
+    ]
+  }
+/>
+`;

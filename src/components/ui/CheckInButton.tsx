@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
 import * as Location from "expo-location";
-import zohoService from "@/services/api/zohoService";
-import basecampService from "@/services/api/basecampService";
+// Import instances from the central service index
+import { zohoService, basecampService } from "@/services/index";
 
 export default function CheckInButton() {
     const [loading, setLoading] = useState(false);
@@ -42,17 +42,19 @@ export default function CheckInButton() {
 
     return (
         <View style={styles.container} testID="check-in-container">
-            <Button
-                testID="check-in-button"
-                mode="contained"
-                onPress={handleCheckIn}
-                disabled={loading}
-                loading={loading}
-                style={styles.button}
-                contentStyle={styles.buttonContent}
-            >
-                Check In
-            </Button>
+            {
+                <Button
+                    testID="check-in-button"
+                    mode="contained"
+                    onPress={handleCheckIn}
+                    disabled={loading}
+                    loading={loading}
+                    style={styles.button}
+                    contentStyle={styles.buttonContent}
+                >
+                    Check In
+                </Button>
+            }
         </View>
     );
 }

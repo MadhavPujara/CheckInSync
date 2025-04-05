@@ -16,6 +16,8 @@ export default abstract class BaseAPIService {
     private maxRetries = 3;
     private retryDelay = 1000; // 1 second
 
+    private errorCodesToRetry = [500, 429]; // 500: Internal Server Error, 429: Too Many Requests
+
     constructor(baseURL: string) {
         this.api = axios.create({
             baseURL,
@@ -25,48 +27,54 @@ export default abstract class BaseAPIService {
         this.setupInterceptors();
     }
 
+    private errorInterceptorFunction = async (
+        error: AxiosError<APIResponse>
+    ) => {
+        const config = error.config as AxiosRequestConfig & {
+            __retryCount?: number;
+        };
+
+        if (!config) {
+            return Promise.reject(this.handleError(error));
+        }
+
+        config.__retryCount = (config.__retryCount || 0) + 1;
+
+        // Check if we should retry and haven't exceeded max retries
+        if (this.shouldRetry(error) && config.__retryCount <= this.maxRetries) {
+            await this.delay(this.retryDelay * config.__retryCount);
+            return this.api.request(config);
+        }
+
+        return Promise.reject(this.handleError(error));
+    };
+
     private setupInterceptors() {
         this.api.interceptors.response.use(
             (response) => response,
-            async (error: AxiosError<APIResponse>) => {
-                const config = error.config as AxiosRequestConfig & {
-                    __retryCount?: number;
-                };
-
-                if (!config) {
-                    return Promise.reject(this.handleError(error));
-                }
-
-                config.__retryCount = (config.__retryCount || 0) + 1;
-
-                // Check if we should retry and haven't exceeded max retries
-                if (
-                    this.shouldRetry(error) &&
-                    config.__retryCount <= this.maxRetries
-                ) {
-                    await this.delay(this.retryDelay * config.__retryCount);
-                    return this.api.request(config);
-                }
-
-                return Promise.reject(this.handleError(error));
-            }
+            this.errorInterceptorFunction
         );
     }
 
     private shouldRetry(error: unknown): boolean {
-        if (!error || typeof error !== "object") return false;
+        if (!error || typeof error !== "object") {
+            return false;
+        }
+
         const axiosError = error as AxiosError<APIResponse>;
 
-        if (!axiosError.isAxiosError) return false;
-        if (!axiosError.response) return true;
+        if (!axiosError.isAxiosError) {
+            return false;
+        }
 
-        return (
-            axiosError.response.status >= 500 ||
-            axiosError.response.status === 429
-        );
+        if (!axiosError.response) {
+            return true;
+        }
+
+        return this.errorCodesToRetry.includes(axiosError.response.status);
     }
 
-    private delay(ms: number): Promise<void> {
+    protected delay(ms: number): Promise<void> {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 

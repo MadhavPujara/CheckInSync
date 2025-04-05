@@ -24,6 +24,16 @@
   - [x] Test error scenarios
   - [x] Test retry logic
 - [x] Add snapshot tests for UI components
+- [x] Add missing UI component tests
+  - [x] CheckInButton tests
+  - [x] ThemedText tests
+  - [x] ThemedView tests
+  - [x] Header tests
+  - [x] SettingsScreen tests
+  - [x] SetupScreen tests
+- [x] Add tests for hooks
+  - [x] useThemeColor tests
+  - [x] useColorScheme tests
 - [ ] Set up test coverage reporting
 - [ ] Add GitHub Actions for test automation
 
@@ -41,7 +51,6 @@
 
 - [ ] Add loading states and better error messages
 - [ ] Implement proper dark mode theming
-- [ ] Add haptic feedback for check-in success/failure
 - [ ] Add pull-to-refresh for check-in status
 - [ ] Add check-in history view
 
@@ -56,9 +65,6 @@
 ### Additional Features
 
 - [ ] Add support for multiple check-in locations
-- [ ] Implement team view for check-in status
-- [ ] Add support for custom integrations
-- [ ] Add export functionality for check-in history
 - [ ] Implement widgets for quick check-in
 
 ## Medium Priority
@@ -84,7 +90,6 @@
 - [ ] Add proper documentation for API integration
 - [ ] Create contribution guidelines
 - [ ] Add GitHub Actions for CI/CD
-- [ ] Add Storybook for component documentation
 - [ ] Implement proper error boundary handling
 
 ## Low Priority
@@ -104,32 +109,6 @@
 - [ ] Add troubleshooting guide
 - [ ] Create deployment guide
 - [ ] Add architecture documentation
-
-## Future Considerations
-
-### Platform Expansion
-
-- [ ] Add web version support
-- [ ] Implement desktop app version
-- [ ] Add support for other check-in services
-- [ ] Create admin dashboard
-- [ ] Add team management features
-
-### Integration
-
-- [ ] Add Slack integration
-- [ ] Add Microsoft Teams integration
-- [ ] Add Google Calendar integration
-- [ ] Add custom webhook support
-- [ ] Implement API for third-party integrations
-
-### Future Features
-
-- [ ] Add support for multiple check-in locations
-- [ ] Implement team view for check-in status
-- [ ] Add support for custom integrations
-- [ ] Add export functionality for check-in history
-- [ ] Implement widgets for quick check-in
 
 ## Notes
 

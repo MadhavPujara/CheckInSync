@@ -68,4 +68,4 @@ class BasecampServiceImpl extends BaseAPIService implements BasecampService {
     }
 }
 
-export default new BasecampServiceImpl();
+export default BasecampServiceImpl;

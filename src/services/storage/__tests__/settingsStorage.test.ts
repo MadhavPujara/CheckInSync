@@ -42,6 +42,14 @@ describe("SettingsStorage", () => {
                 "true"
             );
         });
+
+        it("handles errors when checking setup status", async () => {
+            (SecureStore.getItemAsync as jest.Mock).mockRejectedValue(
+                new Error("Storage error")
+            );
+            const result = await settingsStorage.isSetupComplete();
+            expect(result).toBe(false);
+        });
     });
 
     describe("Zoho keys", () => {
@@ -66,6 +74,14 @@ describe("SettingsStorage", () => {
                 JSON.stringify(mockZohoKeys)
             );
         });
+
+        it("handles errors when retrieving Zoho keys", async () => {
+            (SecureStore.getItemAsync as jest.Mock).mockRejectedValue(
+                new Error("Storage error")
+            );
+            const result = await settingsStorage.getZohoKeys();
+            expect(result).toBeNull();
+        });
     });
 
     describe("Basecamp keys", () => {
@@ -89,6 +105,14 @@ describe("SettingsStorage", () => {
                 "basecamp_keys",
                 JSON.stringify(mockBasecampKeys)
             );
+        });
+
+        it("handles errors when retrieving Basecamp keys", async () => {
+            (SecureStore.getItemAsync as jest.Mock).mockRejectedValue(
+                new Error("Storage error")
+            );
+            const result = await settingsStorage.getBasecampKeys();
+            expect(result).toBeNull();
         });
     });
 

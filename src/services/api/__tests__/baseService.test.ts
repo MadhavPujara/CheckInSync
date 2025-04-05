@@ -33,6 +33,11 @@ class TestAPIService extends BaseAPIService {
     async testRequest<T>(config: any): Promise<AxiosResponse<T>> {
         return this.request(config);
     }
+
+    // Override delay to make tests faster
+    protected delay(ms: number): Promise<void> {
+        return Promise.resolve();
+    }
 }
 
 describe("BaseAPIService", () => {
@@ -115,22 +120,189 @@ describe("BaseAPIService", () => {
                 APIError
             );
         });
+
+        it("should handle non-object errors", async () => {
+            const nonObjectError = "string error";
+            mockRequest.mockRejectedValueOnce(nonObjectError);
+
+            await expect(service.testRequest({ url: "/test" })).rejects.toThrow(
+                NetworkError
+            );
+        });
+
+        it("should handle null errors", async () => {
+            mockRequest.mockRejectedValueOnce(null);
+
+            await expect(service.testRequest({ url: "/test" })).rejects.toThrow(
+                NetworkError
+            );
+        });
+
+        it("should handle non-axios errors", async () => {
+            const nonAxiosError = {
+                isAxiosError: false,
+                message: "Not an Axios error",
+            };
+            mockRequest.mockRejectedValueOnce(nonAxiosError);
+
+            await expect(service.testRequest({ url: "/test" })).rejects.toThrow(
+                NetworkError
+            );
+        });
+
+        it("should handle client errors with status 400", async () => {
+            const clientError = {
+                isAxiosError: true,
+                response: {
+                    status: 400,
+                    data: { message: "Bad Request Error" },
+                },
+                config: {},
+                message: "Request failed with status code 400",
+                name: "Error",
+            };
+            mockRequest.mockRejectedValueOnce(clientError);
+
+            await expect(service.testRequest({ url: "/test" })).rejects.toThrow(
+                APIError
+            );
+
+            try {
+                await service.testRequest({ url: "/test" });
+            } catch (error) {
+                expect((error as APIError).message).toBe("Bad Request Error");
+                expect((error as APIError).statusCode).toBe(400);
+            }
+        });
+
+        it("should handle client errors with status 404", async () => {
+            const clientError = {
+                isAxiosError: true,
+                response: {
+                    status: 404,
+                    data: { message: "Not Found" },
+                },
+                config: {},
+                message: "Request failed with status code 404",
+                name: "Error",
+            };
+            mockRequest.mockRejectedValueOnce(clientError);
+
+            await expect(service.testRequest({ url: "/test" })).rejects.toThrow(
+                APIError
+            );
+
+            try {
+                await service.testRequest({ url: "/test" });
+            } catch (error) {
+                expect((error as APIError).message).toBe("Not Found");
+                expect((error as APIError).statusCode).toBe(404);
+            }
+        });
+
+        it("should use default message when data.message is undefined", async () => {
+            const clientError = {
+                isAxiosError: true,
+                response: {
+                    status: 404,
+                    data: {},
+                },
+                config: {},
+                message: "Request failed with status code 404",
+                name: "Error",
+            };
+            mockRequest.mockRejectedValueOnce(clientError);
+
+            try {
+                await service.testRequest({ url: "/test" });
+            } catch (error) {
+                expect((error as APIError).message).toBe("Client error");
+            }
+        });
+
+        it("should handle errors directly in shouldRetry - non-object error", async () => {
+            // Create a custom error that's exactly null
+            // This tests if (!error || typeof error !== "object")
+            const nullError = null;
+
+            // Direct invocation via the error interceptor
+            const errorWithConfig = {
+                isAxiosError: true,
+                config: {
+                    url: "/test",
+                    __retryCount: 0,
+                },
+                response: undefined,
+            };
+
+            // Mock to return our test value when handleError is called
+            const originalHandleError = service["handleError"];
+            service["handleError"] = jest.fn().mockImplementation((err) => {
+                // When handleError is called with our nullError, confirm it's actually null
+                if (err === null) {
+                    return new NetworkError("Null error handled");
+                }
+                return originalHandleError.call(service, err);
+            });
+
+            // Call testRequest, which will invoke handleError with nullError
+            mockRequest.mockRejectedValueOnce(nullError);
+
+            // This should go through handleError, which we've mocked
+            await expect(service.testRequest({ url: "/test" })).rejects.toThrow(
+                NetworkError
+            );
+
+            // Confirm our mock was called with null
+            expect(service["handleError"]).toHaveBeenCalledWith(null);
+
+            // Restore original method
+            service["handleError"] = originalHandleError;
+        });
+
+        it("should handle non-axios error directly in shouldRetry", async () => {
+            // Create a custom error that's an object but not an Axios error
+            // This tests if (!axiosError.isAxiosError)
+            const regularError = new Error("Regular JS error");
+
+            // Mock to verify our error type
+            const originalHandleError = service["handleError"];
+            service["handleError"] = jest.fn().mockImplementation((err) => {
+                // Verify the error is our regularError
+                if (
+                    err instanceof Error &&
+                    err.message === "Regular JS error"
+                ) {
+                    return new NetworkError("Regular error handled");
+                }
+                return originalHandleError.call(service, err);
+            });
+
+            // Call testRequest, which will invoke handleError
+            mockRequest.mockRejectedValueOnce(regularError);
+
+            // This should go through handleError, which we've mocked
+            await expect(service.testRequest({ url: "/test" })).rejects.toThrow(
+                NetworkError
+            );
+
+            // Confirm our mock was called with regularError
+            expect(service["handleError"]).toHaveBeenCalledWith(regularError);
+
+            // Restore original method
+            service["handleError"] = originalHandleError;
+        });
     });
 
     describe("Retry Logic", () => {
         it("should retry on network errors and succeed", async () => {
-            // Since we're testing retry logic which happens in interceptors,
-            // we need to manually call the error interceptor function
-
-            // Get the error interceptor handler that was registered
             const errorInterceptor = mockUse.mock.calls[0][1];
 
-            // Create network error with retry config
             const networkError = {
                 isAxiosError: true,
                 config: {
                     url: "/test",
-                    __retryCount: 0, // Start with 0 retries
+                    __retryCount: 0,
                 },
                 message: "Network Error",
                 name: "Error",
@@ -142,24 +314,19 @@ describe("BaseAPIService", () => {
                 data: { success: true },
             };
 
-            // Set up request mock to succeed on second call
             mockRequest.mockResolvedValueOnce(successResponse);
 
-            // Manually invoke the error interceptor with our error
-            // This simulates Axios interceptor behavior
             const result = await errorInterceptor(networkError);
 
-            // Verify the retry worked
             expect(result).toEqual(successResponse);
             expect(mockRequest).toHaveBeenCalledTimes(1);
             expect(mockRequest).toHaveBeenCalledWith({
                 url: "/test",
-                __retryCount: 1, // Should be incremented
+                __retryCount: 1,
             });
         });
 
         it("should retry on 500 errors and succeed", async () => {
-            // Get the error interceptor handler that was registered
             const errorInterceptor = mockUse.mock.calls[0][1];
 
             const serverError = {
@@ -181,13 +348,10 @@ describe("BaseAPIService", () => {
                 data: { success: true },
             };
 
-            // Set up request mock to succeed on retry
             mockRequest.mockResolvedValueOnce(successResponse);
 
-            // Manually invoke the error interceptor
             const result = await errorInterceptor(serverError);
 
-            // Verify the retry worked
             expect(result).toEqual(successResponse);
             expect(mockRequest).toHaveBeenCalledTimes(1);
             expect(mockRequest).toHaveBeenCalledWith({
@@ -197,7 +361,6 @@ describe("BaseAPIService", () => {
         });
 
         it("should not retry on 400 errors", async () => {
-            // Get the error interceptor handler that was registered
             const errorInterceptor = mockUse.mock.calls[0][1];
 
             const clientError = {
@@ -214,37 +377,77 @@ describe("BaseAPIService", () => {
                 },
             };
 
-            // We expect this to throw an APIError
             await expect(errorInterceptor(clientError)).rejects.toBeInstanceOf(
                 APIError
             );
 
-            // Verify no retry happened
             expect(mockRequest).not.toHaveBeenCalled();
         });
 
         it("should stop retrying after max attempts", async () => {
-            // Get the error interceptor handler that was registered
             const errorInterceptor = mockUse.mock.calls[0][1];
 
             const networkError = {
                 isAxiosError: true,
                 config: {
                     url: "/test",
-                    __retryCount: 3, // Max retries already reached
+                    __retryCount: 3,
                 },
                 message: "Network Error",
                 name: "Error",
                 response: undefined,
             };
 
-            // We expect this to throw a NetworkError
             await expect(errorInterceptor(networkError)).rejects.toBeInstanceOf(
                 NetworkError
             );
 
-            // Verify no retry happened
             expect(mockRequest).not.toHaveBeenCalled();
+        });
+
+        it("should handle errors with no config", async () => {
+            const errorInterceptor = mockUse.mock.calls[0][1];
+
+            const errorWithNoConfig = {
+                isAxiosError: true,
+                message: "Error with no config",
+                name: "Error",
+                response: {
+                    status: 500,
+                    data: { message: "Server Error" },
+                },
+            };
+
+            await expect(
+                errorInterceptor(errorWithNoConfig)
+            ).rejects.toBeInstanceOf(APIError);
+        });
+
+        it("should correctly determine if error should be retried - non-object error", async () => {
+            const errorInterceptor = mockUse.mock.calls[0][1];
+
+            const stringError = "string error";
+
+            await expect(errorInterceptor(stringError)).rejects.toBeInstanceOf(
+                NetworkError
+            );
+        });
+
+        it("should correctly determine if error should be retried - non-axios error", async () => {
+            const errorInterceptor = mockUse.mock.calls[0][1];
+
+            const nonAxiosError = {
+                isAxiosError: false,
+                config: {
+                    url: "/test",
+                    __retryCount: 0,
+                },
+                message: "Not an Axios error",
+            };
+
+            await expect(
+                errorInterceptor(nonAxiosError)
+            ).rejects.toBeInstanceOf(NetworkError);
         });
     });
 

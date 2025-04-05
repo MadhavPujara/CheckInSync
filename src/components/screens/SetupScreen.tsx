@@ -10,7 +10,7 @@ import { TextInput, Button, Text, Card, useTheme } from "react-native-paper";
 import settingsStorage, {
     ZohoKeys,
     BasecampKeys,
-} from "../../../src/services/storage/settingsStorage";
+} from "@/services/storage/settingsStorage";
 
 interface SetupScreenProps {
     onSetupComplete: () => void;
@@ -110,6 +110,7 @@ export default function SetupScreen({ onSetupComplete }: SetupScreenProps) {
                             textColor={theme.colors.onBackground}
                             outlineColor={theme.colors.outline}
                             activeOutlineColor={theme.colors.primary}
+                            testID="zoho-client-id-input"
                         />
                         <TextInput
                             mode="outlined"
@@ -123,6 +124,7 @@ export default function SetupScreen({ onSetupComplete }: SetupScreenProps) {
                             textColor={theme.colors.onBackground}
                             outlineColor={theme.colors.outline}
                             activeOutlineColor={theme.colors.primary}
+                            testID="zoho-client-secret-input"
                         />
                         <TextInput
                             mode="outlined"
@@ -136,6 +138,7 @@ export default function SetupScreen({ onSetupComplete }: SetupScreenProps) {
                             textColor={theme.colors.onBackground}
                             outlineColor={theme.colors.outline}
                             activeOutlineColor={theme.colors.primary}
+                            testID="zoho-refresh-token-input"
                         />
                         <TextInput
                             mode="outlined"
@@ -149,6 +152,7 @@ export default function SetupScreen({ onSetupComplete }: SetupScreenProps) {
                             textColor={theme.colors.onBackground}
                             outlineColor={theme.colors.outline}
                             activeOutlineColor={theme.colors.primary}
+                            testID="zoho-access-token-input"
                         />
                     </Card.Content>
                 </Card>
@@ -174,6 +178,7 @@ export default function SetupScreen({ onSetupComplete }: SetupScreenProps) {
                             textColor={theme.colors.onBackground}
                             outlineColor={theme.colors.outline}
                             activeOutlineColor={theme.colors.primary}
+                            testID="basecamp-access-token-input"
                         />
                         <TextInput
                             mode="outlined"
@@ -190,6 +195,7 @@ export default function SetupScreen({ onSetupComplete }: SetupScreenProps) {
                             textColor={theme.colors.onBackground}
                             outlineColor={theme.colors.outline}
                             activeOutlineColor={theme.colors.primary}
+                            testID="basecamp-account-id-input"
                         />
                         <TextInput
                             mode="outlined"
@@ -206,6 +212,7 @@ export default function SetupScreen({ onSetupComplete }: SetupScreenProps) {
                             textColor={theme.colors.onBackground}
                             outlineColor={theme.colors.outline}
                             activeOutlineColor={theme.colors.primary}
+                            testID="basecamp-project-id-input"
                         />
                         <TextInput
                             mode="outlined"
@@ -222,6 +229,7 @@ export default function SetupScreen({ onSetupComplete }: SetupScreenProps) {
                             textColor={theme.colors.onBackground}
                             outlineColor={theme.colors.outline}
                             activeOutlineColor={theme.colors.primary}
+                            testID="basecamp-campfire-id-input"
                         />
                     </Card.Content>
                 </Card>
@@ -231,6 +239,7 @@ export default function SetupScreen({ onSetupComplete }: SetupScreenProps) {
                     onPress={handleSave}
                     disabled={!isValid()}
                     style={{ marginTop: 16, marginBottom: 24 }}
+                    testID="complete-setup-button"
                 >
                     Complete Setup
                 </Button>

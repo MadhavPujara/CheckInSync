@@ -53,9 +53,12 @@ class ZohoServiceImpl extends BaseAPIService implements ZohoService {
             });
             return true;
         } catch (error) {
+            if (error instanceof Errors.ValidationError) {
+                return false;
+            }
             return false;
         }
     }
 }
 
-export default new ZohoServiceImpl();
+export default ZohoServiceImpl;
